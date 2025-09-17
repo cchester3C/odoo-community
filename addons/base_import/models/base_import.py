@@ -1501,6 +1501,41 @@ class Import(models.TransientModel):
 
         return import_result
 
+    @api.model
+    def get_required_fields(self, model_name):
+        """ Get the list of required fields for a specific model.
+        
+        This method returns information about required fields for the given model,
+        which is useful for displaying mandatory fields in the import UI.
+        
+        :param str model_name: The name of the model to get required fields for
+        :return: List of required field dictionaries containing name and string
+        :rtype: list[dict]
+        """
+        if not model_name:
+            return []
+            
+        try:
+            Model = self.env[model_name]
+            if not Model:
+                return []
+        except KeyError:
+            return []
+            
+        # Get the fields tree and extract required fields
+        fields_tree = self.get_fields_tree(model_name)
+        required_fields = []
+        
+        for field in fields_tree:
+            if field.get('required', False):
+                required_fields.append({
+                    'name': field['name'],
+                    'string': field['string'],
+                    'type': field.get('type', ''),
+                })
+        
+        return required_fields
+
     def _extract_binary_filenames(self, import_fields, data, model=False, prefix='', binary_filenames=False):
         model = model or self.res_model
         binary_filenames = binary_filenames or defaultdict(list)

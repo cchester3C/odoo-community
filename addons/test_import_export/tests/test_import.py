@@ -967,3 +967,50 @@ class test_failures(TransactionCase):
             [],
             {'has_headers': True, 'separator': ',', 'quoting': '"'})
         self.assertFalse(results['messages'], "results should be empty on successful import")
+
+
+class TestRequiredFields(BaseImportCase):
+    
+    def test_get_required_fields_basic(self):
+        """Test that get_required_fields returns required fields for a model"""
+        import_wizard = self.env['base_import.import'].create({
+            'res_model': 'res.partner'
+        })
+        
+        required_fields = import_wizard.get_required_fields('res.partner')
+        
+        # res.partner typically has 'name' as a required field
+        field_names = [field['name'] for field in required_fields]
+        self.assertIn('name', field_names, "Expected 'name' to be a required field for res.partner")
+        
+        # Check that returned fields have expected structure
+        for field in required_fields:
+            self.assertIn('name', field, "Field should have 'name' key")
+            self.assertIn('string', field, "Field should have 'string' key")
+            self.assertIn('type', field, "Field should have 'type' key")
+    
+    def test_get_required_fields_empty_model(self):
+        """Test that get_required_fields handles empty/invalid model names"""
+        import_wizard = self.env['base_import.import'].create({
+            'res_model': 'res.partner'
+        })
+        
+        # Test with empty model name
+        result = import_wizard.get_required_fields('')
+        self.assertEqual(result, [], "Should return empty list for empty model name")
+        
+        # Test with non-existent model name
+        result = import_wizard.get_required_fields('nonexistent.model')
+        self.assertEqual(result, [], "Should return empty list for non-existent model")
+        
+    def test_get_required_fields_no_required_fields(self):
+        """Test behavior when model has no required fields"""
+        # Use a model that typically has no required fields or create a test model
+        import_wizard = self.env['base_import.import'].create({
+            'res_model': 'res.currency'
+        })
+        
+        required_fields = import_wizard.get_required_fields('res.currency')
+        
+        # Result should be a list (could be empty)
+        self.assertIsInstance(required_fields, list, "Should return a list even when no required fields")

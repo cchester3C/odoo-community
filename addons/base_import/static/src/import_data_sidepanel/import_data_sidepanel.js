@@ -4,10 +4,11 @@ import { Component } from "@odoo/owl";
 import { CheckBox } from "@web/core/checkbox/checkbox";
 import { _t } from "@web/core/l10n/translation";
 import { DocumentationLink } from "@web/views/widgets/documentation_link/documentation_link";
+import { RequiredFieldsDisplay } from "../required_fields_display/required_fields_display";
 
 export class ImportDataSidepanel extends Component {
     static template = "ImportDataSidepanel";
-    static components = { CheckBox, DocumentationLink };
+    static components = { CheckBox, DocumentationLink, RequiredFieldsDisplay };
     static props = {
         filename: { type: String },
         formattingOptions: { type: Object, optional: true },
@@ -19,6 +20,7 @@ export class ImportDataSidepanel extends Component {
         hasBinaryFields: { type: Boolean },
         binaryFilesParams: { type: Object },
         onBinaryFilesParamsChanged: { type: Function },
+        resModel: { type: String, optional: true },
     };
 
     get fileName() {

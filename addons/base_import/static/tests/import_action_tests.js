@@ -1604,4 +1604,51 @@ QUnit.module("Base Import Tests", (hooks) => {
             );
         }
     );
+
+    QUnit.test("Required fields display shows in import sidepanel", async function (assert) {
+        assert.expect(5);
+
+        registerFakeHTTPService();
+
+        await createImportAction({
+            "base_import.import/parse_preview": async (route, args) => {
+                return parsePreview(args[1]);
+            },
+            "base_import.import/get_required_fields": async (route, args) => {
+                assert.step("get_required_fields called");
+                return [
+                    { name: "name", string: "Name", type: "char" },
+                    { name: "email", string: "Email", type: "char" }
+                ];
+            },
+        });
+
+        // Set and trigger the change of a file for the input
+        const file = new File(["fake_file"], "fake_file.csv", { type: "text/plain" });
+        await editInput(target, ".o_control_panel_main_buttons input[type='file']", file);
+
+        await nextTick();
+
+        assert.containsOnce(
+            target,
+            ".o_required_fields_display",
+            "Required fields component should be present"
+        );
+
+        assert.containsOnce(
+            target,
+            ".o_required_fields_display h4",
+            "Required fields heading should be present"
+        );
+
+        // Check that required fields are displayed
+        const requiredFieldsItems = target.querySelectorAll(".o_required_field_item");
+        assert.strictEqual(
+            requiredFieldsItems.length,
+            2,
+            "Should display 2 required fields"
+        );
+
+        assert.verifySteps(["get_required_fields called"]);
+    });
 });
