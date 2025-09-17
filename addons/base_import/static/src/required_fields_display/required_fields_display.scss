@@ -1,0 +1,20 @@
+.o_required_fields_display {
+    .o_required_fields_list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .o_required_field_item {
+        border: 1px solid #e9ecef;
+        transition: background-color 0.2s ease;
+        
+        &:hover {
+            background-color: #f8f9fa !important;
+        }
+    }
+
+    .fa-asterisk {
+        width: 12px;
+        text-align: center;
+    }
+}

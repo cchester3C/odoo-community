@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="RequiredFieldsDisplay">
+        <div class="o_required_fields_display pt-3 pb-4 border-top">
+            <h4>Required Fields</h4>
+            <div t-if="state.loading" class="text-muted fst-italic">
+                <i class="fa fa-spinner fa-spin me-2"/>Loading required fields...
+            </div>
+            <div t-elif="state.error" class="text-danger">
+                <i class="fa fa-exclamation-triangle me-2"/>Error loading required fields
+            </div>
+            <div t-elif="!hasRequiredFields" class="text-muted fst-italic">
+                <i class="fa fa-info-circle me-2"/>No required fields for this model
+            </div>
+            <div t-else="">
+                <div class="text-muted mb-2">
+                    <small><t t-esc="requiredFieldsLabel"/></small>
+                </div>
+                <div class="o_required_fields_list">
+                    <div t-foreach="state.requiredFields" t-as="field" t-key="field.name" 
+                         class="o_required_field_item d-flex align-items-center mb-1 p-2 rounded bg-light">
+                        <i class="fa fa-asterisk text-danger me-2" style="font-size: 8px;"/>
+                        <div class="flex-grow-1">
+                            <span class="fw-bold"><t t-esc="field.string"/></span>
+                            <small class="text-muted ms-2">(<t t-esc="field.name"/>)</small>
+                        </div>
+                        <span t-if="field.type" class="badge bg-secondary text-white small">
+                            <t t-esc="field.type"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fa fa-lightbulb-o me-1"/>
+                        Make sure your CSV file includes these fields or provide default values during import.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

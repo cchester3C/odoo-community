@@ -33,6 +33,7 @@
                         hasBinaryFields="hasBinaryFields"
                         binaryFilesParams="model.binaryFilesParams"
                         onBinaryFilesParamsChanged.bind="(name, value) => model.onBinaryFilesParamsChanged(name, value)"
+                        resModel="resModel"
                     />
                     <ImportDataContent
                         columns="model.columns"
